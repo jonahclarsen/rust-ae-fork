@@ -66,10 +66,10 @@ create_bundle profile TargetDir:
 
     # codesign with the first development cert we can find using its hash
     if [ -z "$NO_SIGN" ]; then
-        codesign --options runtime --timestamp -strict  --sign $( security find-identity -v -p codesigning | grep -m 1 "Apple Development" | awk -F ' ' '{print $2}' ) {{TargetDir}}/{{profile}}/{{PluginName}}.plugin
+        codesign --force --deep --options runtime --timestamp -strict  --sign $( security find-identity -v -p codesigning | grep -m 1 "Developer ID Application" | awk -F ' ' '{print $2}' ) {{TargetDir}}/{{profile}}/{{PluginName}}.plugin
     fi
 
     # Install
     if [ -z "$NO_INSTALL" ]; then
-        sudo cp -rf "{{TargetDir}}/{{profile}}/{{PluginName}}.plugin" "/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/"
+        sudo cp -rf "{{TargetDir}}/{{profile}}/{{PluginName}}.plugin" "/Library/Application Support/Adobe/Common/Plug-ins/7.0/MediaCore/Haligonian"
     fi
