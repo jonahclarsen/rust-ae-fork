@@ -1,5 +1,3 @@
-set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
-
 TargetDir := env_var_or_default("CARGO_TARGET_DIR", "target")
 export AESDK_ROOT := if env("AESDK_ROOT", "") == "" { justfile_directory() / "../../sdk/AfterEffectsSDK" } else { env_var("AESDK_ROOT") }
 export PRSDK_ROOT := if env("PRSDK_ROOT", "") == "" { justfile_directory() / "../../sdk/Premiere Pro 22.0 C++ SDK" } else { env_var("PRSDK_ROOT") }
@@ -8,23 +6,20 @@ export PRSDK_ROOT := if env("PRSDK_ROOT", "") == "" { justfile_directory() / "..
 build:
     cargo build
     if (-not $env:NO_INSTALL) { \
-        Start-Process PowerShell -Verb runAs -ArgumentList "-command Set-Location '{{source_directory()}}'; Copy-Item -Force '{{TargetDir}}\debug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\{{PluginName}}.aex'" \
+        cp -Rf '{{TargetDir}}\debug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\{{PluginName}}.aex' \
     }
 
 [windows]
 fastdebug:
     cargo build --profile fastdebug
-    Copy-Item -Force '{{TargetDir}}\fastdebug\{{BinaryName}}.dll' '{{TargetDir}}\fastdebug\{{PluginName}}.aex'
-    if (-not $env:NO_INSTALL) { \
-        Start-Process PowerShell -Verb runAs -ArgumentList "-command Set-Location '{{source_directory()}}'; Copy-Item -Force '{{TargetDir}}\fastdebug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\{{PluginName}}.aex'" \
-    }
+    cp -Rf '{{TargetDir}}\fastdebug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\Haligonian\{{PluginName}}.aex' \
 
 [windows]
 release:
     cargo build --release
     Copy-Item -Force '{{TargetDir}}\release\{{BinaryName}}.dll' '{{TargetDir}}\release\{{PluginName}}.aex'
     if (-not $env:NO_INSTALL) { \
-        Start-Process PowerShell -Verb runAs -ArgumentList "-command Set-Location '{{source_directory()}}'; Copy-Item -Force '{{TargetDir}}\release\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\{{PluginName}}.aex'" \
+        cp -Rf '{{TargetDir}}\debug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\{{PluginName}}.aex' \
     }
 
 [macos]
