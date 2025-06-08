@@ -25,6 +25,11 @@ build:
     just -f {{justfile()}} create_bundle debug {{TargetDir}}
 
 [macos]
+fastdebug:
+    cargo build --profile fastdebug
+    just -f {{justfile()}} create_bundle fastdebug {{TargetDir}}
+
+[macos]
 release:
     cargo build --release
     just -f {{justfile()}} create_bundle release {{TargetDir}}

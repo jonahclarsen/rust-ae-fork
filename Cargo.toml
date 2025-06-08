@@ -9,3 +9,14 @@ members = [
     "premiere-sys"
 ]
 resolver = "2"
+
+[profile.dev]
+debug = true
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+
+[profile.fastdebug]
+debug = true
+inherits = "release"
