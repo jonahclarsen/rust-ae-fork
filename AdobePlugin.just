@@ -12,6 +12,14 @@ build:
     }
 
 [windows]
+fastdebug:
+    cargo build --profile fastdebug
+    Copy-Item -Force '{{TargetDir}}\fastdebug\{{BinaryName}}.dll' '{{TargetDir}}\fastdebug\{{PluginName}}.aex'
+    if (-not $env:NO_INSTALL) { \
+        Start-Process PowerShell -Verb runAs -ArgumentList "-command Set-Location '{{source_directory()}}'; Copy-Item -Force '{{TargetDir}}\fastdebug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\{{PluginName}}.aex'" \
+    }
+
+[windows]
 release:
     cargo build --release
     Copy-Item -Force '{{TargetDir}}\release\{{BinaryName}}.dll' '{{TargetDir}}\release\{{PluginName}}.aex'
