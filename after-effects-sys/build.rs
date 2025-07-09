@@ -10,7 +10,7 @@ fn main() {
     println!("cargo:rerun-if-changed=wrapper.hpp");
 
     println!("cargo::rustc-check-cfg=cfg(builtin_bindings)");
-    if env::var("AESDK_ROOT").is_err() {
+    if !env::var("AESDK_ROOT").is_ok_and(|x| !x.is_empty()) {
         println!("cargo:rustc-cfg=builtin_bindings");
         return;
     }
@@ -81,6 +81,7 @@ fn main() {
 
     if cfg!(target_os = "macos") {
         ae_bindings = ae_bindings
+            .clang_arg("-Wno-elaborated-enum-base")
             //.clang_arg("-I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreFoundation.framework/Versions/A/Headers/")
             //.clang_arg("-I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Versions/A/Headers/")
             //.clang_arg("-I/Library/Developer/CommandLineTools/usr/include/c++/v1/")
