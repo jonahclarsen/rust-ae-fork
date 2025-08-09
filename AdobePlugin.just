@@ -40,6 +40,11 @@ release:
     just -f {{justfile()}} create_bundle release {{TargetDir}}
 
 [macos]
+releaseandnotarize:
+    cargo build --release
+    NOTARIZE=1 just -f {{justfile()}} create_bundle release {{TargetDir}}
+
+[macos]
 create_bundle profile TargetDir:
     #!/bin/bash
     set -e
@@ -71,7 +76,15 @@ create_bundle profile TargetDir:
 
     # codesign with the first development cert we can find using its hash
     if [ -z "$NO_SIGN" ]; then
+        codesign --force --deep --options runtime -strict  --sign $( security find-identity -v -p codesigning | grep -m 1 "Developer ID Application" | awk -F ' ' '{print $2}' ) {{TargetDir}}/{{profile}}/{{PluginName}}.plugin
+    fi
+
+    # notarize plugin
+    if [ -n "$NOTARIZE" ]; then
+        # We sign without --timestamp, then re-sign with --timestamp before notarizing, because signing with --timestamp requires internet and takes time
+        echo "Notarizing plugin..."
         codesign --force --deep --options runtime --timestamp -strict  --sign $( security find-identity -v -p codesigning | grep -m 1 "Developer ID Application" | awk -F ' ' '{print $2}' ) {{TargetDir}}/{{profile}}/{{PluginName}}.plugin
+        ../../notarize_plugin.sh {{TargetDir}}/{{profile}}/{{PluginName}}.plugin
     fi
 
     # Install
