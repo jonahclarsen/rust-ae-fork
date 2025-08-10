@@ -7,22 +7,17 @@ TargetDir := env_var("CARGO_TARGET_DIR")
 [windows]
 build:
     cargo build
-    if (-not $env:NO_INSTALL) { \
-        cp -Rf '{{TargetDir}}\debug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\{{PluginName}}.aex' \
-    }
+    Copy-Item -Path '{{TargetDir}}\debug\{{BinaryName}}.dll' -Destination 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\Haligonian\{{PluginName}}.aex' -Recurse -Force
 
 [windows]
 fastdebug:
     cargo build --profile fastdebug
-    cp -Rf '{{TargetDir}}\fastdebug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\Haligonian\{{PluginName}}.aex' \
+    Copy-Item -Path '{{TargetDir}}\fastdebug\{{BinaryName}}.dll' -Destination 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\Haligonian\{{PluginName}}.aex' -Recurse -Force
 
 [windows]
 release:
     cargo build --release
-    Copy-Item -Force '{{TargetDir}}\release\{{BinaryName}}.dll' '{{TargetDir}}\release\{{PluginName}}.aex'
-    if (-not $env:NO_INSTALL) { \
-        cp -Rf '{{TargetDir}}\debug\{{BinaryName}}.dll' 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\{{PluginName}}.aex' \
-    }
+    Copy-Item -Path '{{TargetDir}}\release\{{BinaryName}}.dll' -Destination 'C:\Program Files\Adobe\Common\Plug-ins\7.0\MediaCore\Haligonian\{{PluginName}}.aex' -Recurse -Force
 
 [macos]
 build:
